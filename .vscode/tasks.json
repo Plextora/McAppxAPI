@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "npm: build",
+      "detail": "tsc"
+    },
+    {
+      "type": "npm",
+      "script": "buildrun",
+      "group": "none",
+      "problemMatcher": [],
+      "label": "npm: buldrun",
+      "detail": "Builds the project and runs it"
+    },
+    {
+      "type": "npm",
+      "script": "start",
+      "group": "none",
+      "problemMatcher": [],
+      "label": "npm: start",
+      "detail": "Starts the server"
+    }
+  ]
+}
