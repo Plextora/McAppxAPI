@@ -1,5 +1,7 @@
 import express = require("express");
 import("node-fetch");
+// imports are like that cause intellisense
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
