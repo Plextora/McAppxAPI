@@ -6,8 +6,8 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-function removeLinesWithKeywords(inputString: string) {
-  const keywords = [
+function filterHTML(inputString: string) {
+  const removeKeywords = [
     "BlockMap",
     "x86",
     "arm",
@@ -15,31 +15,61 @@ function removeLinesWithKeywords(inputString: string) {
     "Microsoft.Services.Store.Engagement",
   ];
   const lines = inputString.split("\n");
-  const filteredLines = lines.filter((line) => {
-    return !keywords.some((keyword) => line.includes(keyword));
-  });
-  return filteredLines.join("\n");
-}
+  const lessHTML = lines
+    .filter((line) => {
+      return !removeKeywords.some((keyword) => line.includes(keyword));
+    })
+    .join("\n");
 
-function removeNonMatchingSubstring(inputString: string) {
-  const keywords = [
+  const keepKeywords = [
     "tlu.dl.delivery.mp.microsoft.com/filestreamingservice/files",
     "undefined",
     "Microsoft.MinecraftUWP",
   ];
 
-  const filteredString = inputString
+  const filteredString = lessHTML
     .split("\n")
     .filter((line) => {
-      return keywords.some((keyword) => line.includes(keyword));
+      return keepKeywords.some((keyword) => line.includes(keyword));
     })
     .join("\n");
 
-  return filteredString;
+  const match = filteredString.match(
+    /<a href="([^"]+)"[^>]*>([^<]+)<\/a><\/td><td[^>]*>[^<]+<\/td><td[^>]*>[^<]+<\/td><td[^>]*>([^<]+)<\/td>/
+  );
+
+  if (match) {
+    if (match) {
+      const [, link, fileName, sizeStr] = match;
+
+      return {
+        fileName,
+        link,
+        sizeMB: sizeStr,
+      };
+    }
+
+    return null;
+  }
 }
 
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  fetch("https://store.rg-adguard.net/api/GetFiles", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      type: "url",
+      url: "https://xbox.com/en-us/games/store/minecraft-for-windows/9nblggh2jhxj",
+      ring: '"RP"',
+      lang: '"en-US"',
+    }),
+  })
+    .then((response) => {
+      response.text().then((baseHTML: string) => {
+        res.send(filterHTML(baseHTML));
+      });
+    })
+    .catch((err) => console.error(err));
 });
 
 app.listen(PORT, () => {

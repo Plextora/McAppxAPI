@@ -1,7 +1,7 @@
 {
   "name": "mcappxapi",
   "version": "0.0.0",
-  "description": "Simple API to grab x64 and x86 Minecraft: Windows 10 Edition APPX files",
+  "description": "Simple API to grab the latest x64 version Minecraft: Windows 10 Edition APPX files",
   "main": "src/index.ts",
   "scripts": {
     "build": "tsc",
